@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,7 @@ import com.spring.Entity.JournalEntry;
 @RequestMapping("/journal")
 public class JournalEntryController {
  
-	public Map<String, JournalEntry> entries = new HashMap<>();
+	public Map<ObjectId, JournalEntry> entries = new HashMap<>();
 	
 	@GetMapping
 	public List<JournalEntry> getJournals(){
@@ -43,7 +45,7 @@ public class JournalEntryController {
 	}
 	
 	@PutMapping("id/{myId}")
-	public JournalEntry updateJournal(@PathVariable String myId, @RequestBody JournalEntry entry) {
+	public JournalEntry updateJournal(@PathVariable ObjectId myId, @RequestBody JournalEntry entry) {
 		return entries.put(myId, entry);
 	}
 }

@@ -1,7 +1,9 @@
 package com.spring.Entity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,16 +11,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class JournalEntry {
 
 	@Id
-	private String id;
+	private ObjectId id;
 	private String title;
 	private String content;
-	private Date date;
+	private LocalDate date;
 
-	public String getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 
@@ -37,13 +39,13 @@ public class JournalEntry {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
-	public Date getDate() {
+
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
-
+	
 }
