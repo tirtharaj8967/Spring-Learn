@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.Entity.JournalEntry;
+import com.spring.Entity.User;
 import com.spring.Service.JournalEntryService;
+import com.spring.Service.UserService;
 
 @RestController
 @RequestMapping("/mainjournal")
@@ -27,20 +29,29 @@ public class JournalEntryMainController {
 
 	@Autowired
 	private JournalEntryService journalEntryService;
+	@Autowired
+	private UserService userService;
 
-	@PostMapping("/createJournal")
-	public ResponseEntity<JournalEntry> createJournal(@RequestBody JournalEntry journalEntry) {
+	@PostMapping("createJournal/{userName}")
+	public ResponseEntity<?> createJournal(@RequestBody JournalEntry journalEntry, @PathVariable String userName) {
 		try {
-			journalEntryService.saveJournal(journalEntry);
+			journalEntryService.saveJournal(journalEntry,userName);
 			return new ResponseEntity<>(journalEntry, HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<JournalEntry>(HttpStatus.NOT_IMPLEMENTED);
+			return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 		}
 	}
 
-	@GetMapping("getAllJournals")
-	public List<JournalEntry> getAll() {
-		return journalEntryService.getAllJournals();
+	@GetMapping("{userName}")
+	public ResponseEntity<?> getAllJournalEntriesofUser(@PathVariable String userName) {
+		User user= userService.findByUserName(userName);
+		List<JournalEntry> entries= user.getJournalEntries();
+		if(user!=null && !entries.isEmpty()) {
+			
+			return new ResponseEntity<>(entries, HttpStatus.OK);
+		} 
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);	
+		
 	}
 
 	@GetMapping("getJournal/{id}")
@@ -53,7 +64,7 @@ public class JournalEntryMainController {
 		}
 	}
 
-	@PutMapping("updateJournal/{myId}")
+	@PutMapping("updateJournal/{userName}/{myId}")
 	public ResponseEntity<JournalEntry> updateJournal(@PathVariable ObjectId myId, @RequestBody JournalEntry newEntry) {
 		
 		 JournalEntry oldEntry = journalEntryService.getJournalById(myId); 
@@ -69,9 +80,9 @@ public class JournalEntryMainController {
 		
 	}
 
-	@DeleteMapping("deleteJournal/{id}")
-	public ResponseEntity<JournalEntry> deleteJournal(@PathVariable ObjectId id) {
-		journalEntryService.deleteJournal(id);
+	@DeleteMapping("deleteJournal/{userName}/{id}")
+	public ResponseEntity<JournalEntry> deleteJournal(@PathVariable ObjectId id, @PathVariable String userName) {
+		journalEntryService.deleteJournal(id, userName);
 		return new ResponseEntity<JournalEntry>(HttpStatus.NO_CONTENT);
 	}
 
